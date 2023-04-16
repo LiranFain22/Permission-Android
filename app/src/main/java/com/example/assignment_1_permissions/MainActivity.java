@@ -34,13 +34,10 @@ public class MainActivity extends AppCompatActivity {
         myBatteryManager = (BatteryManager) context.getSystemService(Context.BATTERY_SERVICE);
     }
 
-    /**
-     * Check password's textField:
-     * 1. if password is current battery percentage, then permission granted
-     * 2. if phone is on silent mode, then permission granted
-     * 3. if phone is on airplane mode, then permission granted
-     * 4. if phone is on vibrate mode, then permission granted
-     *  Otherwise, permission denied
+    /*
+     * If password equal to battery percentage, phone on airplane mode and silent mode,
+     * then access granted
+     * otherwise, access denied
      */
     private void initSubmitBTN() {
         main_BTN_submit.setOnClickListener(view -> {
@@ -54,21 +51,18 @@ public class MainActivity extends AppCompatActivity {
             int password = Integer.parseInt(input);
 
             if (getBatteryPercentage() == password) {
-                Toast.makeText(MainActivity.this,"Login successfully - the battery equal to password",Toast.LENGTH_LONG).show();
+                if (isAirplaneModeOn(MainActivity.this)) {
+                    if (isSilentModeOn()) {
+                        Toast.makeText(MainActivity.this,"Login successfully",Toast.LENGTH_LONG).show();
+                    }
+                    else {
+                        Toast.makeText(MainActivity.this,"Login failed",Toast.LENGTH_SHORT).show();
+                    }
+                }
+                else {
+                    Toast.makeText(MainActivity.this,"Login failed",Toast.LENGTH_SHORT).show();
+                }
             }
-            // silent mode is on
-            else if (isSilentModeOn()) {
-                Toast.makeText(MainActivity.this,"Login successfully - silent mode is open",Toast.LENGTH_LONG).show();
-            }
-            // vibration mode is on
-            else if (isVibrationModeOn()) {
-                Toast.makeText(MainActivity.this,"Login successfully - vibrate mode is open",Toast.LENGTH_LONG).show();
-            }
-            // airplane mode is on
-            else if (isAirplaneModeOn(MainActivity.this)) {
-                Toast.makeText(MainActivity.this,"Login successfully - airplane mode is open",Toast.LENGTH_LONG).show();
-            }
-            // otherwise
             else {
                 Toast.makeText(MainActivity.this,"Login failed",Toast.LENGTH_SHORT).show();
             }
